@@ -1,0 +1,6 @@
+*.swp
+*.lo
+*.o
+.libs/
+*.php
+shogun
