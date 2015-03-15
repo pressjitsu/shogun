@@ -64,7 +64,11 @@ void print_zval(zval *z) {
 			break;
 		/*
 		#define IS_BOOL     3
-		#define IS_ARRAY    4
+		*/
+		case IS_ARRAY:
+			printf("array[%d]", z->value.ht->nNumOfElements);
+			break;
+		/*
 		#define IS_OBJECT   5
 		*/
 		case IS_STRING:
@@ -149,7 +153,7 @@ int main(int argc, char *argv[])
 					print_zval(&EX_TMP_VAR(execute_data, operand.var)->tmp_var);
 					break;
 				case IS_VAR:
-					zend_print_variable(EX_TMP_VAR(execute_data, operand.var)->var.ptr);
+					zend_print_variable(*EX_TMP_VAR(execute_data, operand.var)->var.ptr_ptr);
 					break;
 				case IS_UNUSED:
 					break;
@@ -167,9 +171,11 @@ int main(int argc, char *argv[])
 		ret = execute_data->opline->handler(execute_data TSRMLS_CC);
 
 		if (ret == 2) { /** Nesting context */
+			printf(">> ");
 			execute_data = zend_create_execute_data_from_op_array(EG(active_op_array), 1 TSRMLS_CC);
 		} else if (ret == 3) { /** Unnesting context */
 			execute_data = EG(current_execute_data);
+			printf("<< ");
 		} else if (ret != 0) {
 			printf("= %d\n", ret);
 			break;
