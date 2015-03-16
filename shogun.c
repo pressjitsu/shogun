@@ -62,9 +62,9 @@ void print_zval(zval *z) {
 		case IS_DOUBLE:
 			printf("%f", z->value.dval);
 			break;
-		/*
-		#define IS_BOOL     3
-		*/
+		case IS_BOOL:
+			printf("%s", z->value.lval ? "true" : "false");
+			break;
 		case IS_ARRAY:
 			printf("array[%d]", z->value.ht->nNumOfElements);
 			break;
@@ -82,6 +82,37 @@ void print_zval(zval *z) {
 		*/
 		default:
 			printf("unknown (%d)", z->type);
+	}
+}
+
+void print_type(uint t) {
+	switch (t) {
+		case IS_NULL:
+			printf("null");
+			break;
+		case IS_LONG:
+			printf("int");
+			break;
+		case IS_DOUBLE:
+			printf("float");
+			break;
+		case IS_BOOL:
+			printf("bool");
+		case IS_ARRAY:
+			printf("array");
+			break;
+		case IS_OBJECT:
+			printf("object");
+			break;
+		case IS_STRING:
+			printf("string");
+			break;
+		case IS_RESOURCE:
+			printf("resource");
+			break;
+		default:
+			printf("unknown (%d)", t);
+			break;
 	}
 }
 
@@ -138,6 +169,21 @@ int main(int argc, char *argv[])
 		/** Opcode */
 		printf("\t%s:", zend_get_opcode_name(execute_data->opline->opcode));
 
+		/** Extended value */
+		if (execute_data->opline->extended_value) {
+			switch (execute_data->opline->opcode) {
+				case ZEND_CAST:
+					printf(" as ");
+					print_type(execute_data->opline->extended_value);
+					break;
+				case ZEND_RETURN:
+					break;
+				default:
+					printf(" unknown extended value");
+					break;
+			}
+		}
+
 		/** Operands */
 		int t = 1;
 		while (t < 3) {
@@ -145,7 +191,7 @@ int main(int argc, char *argv[])
 			znode_op operand = (t++ == 1) ? execute_data->opline->op1 : execute_data->opline->op2;
 
 			printf(" ");
-			switch(operand_type) {
+			switch (operand_type) {
 				case IS_CONST:
 					print_zval(&operand.literal->constant);
 					break;

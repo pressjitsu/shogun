@@ -3,4 +3,5 @@
 *.o
 .libs/
 *.php
+!tests/*.php
 shogun

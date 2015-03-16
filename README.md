@@ -9,9 +9,13 @@ This application sanitized and runs PHP code to reveal misbehaving features that
 
 Nobody knows. It tries to safely execute parts of PHP code to arrive to hidden branches, obfuscated function calls, etc. to reveal their true intent.
 
+## Roadmap
+
+Right now we're testing the output of each opcode against all possible opcodes http://php.net/manual/en/internals2.opcodes.php and fixing output issues against a minimal test set.
+
 # Installation
 
-Compiles as a PHP SAPI module. Place into `sapi/shogun`, run `autoconf -f` to force autoconf rebuild to run, configure `--enable-shogun` and `make -j$(nproc)` as usual.
+Compiles as a PHP SAPI module. Place into `sapi/shogun`, run `autoconf -f` to force autoconf rebuild to run, configure `--enable-shogun` and `make -j$(nproc) shogun` as usual.
 
 # Usage
 

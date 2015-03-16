@@ -1,0 +1,2 @@
+<?php
+	$peas = array( 1, 2, 3 );
