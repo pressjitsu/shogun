@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 	int ret = 0;
 	while (1) {
 		/** Opcode */
-		printf("\t%s:", zend_get_opcode_name(execute_data->opline->opcode));
+		printf("\t[0x%08x] %s:", execute_data->opline, zend_get_opcode_name(execute_data->opline->opcode));
 
 		/** Extended value */
 		if (execute_data->opline->extended_value) {
@@ -178,6 +178,9 @@ int main(int argc, char *argv[])
 					break;
 				case ZEND_RETURN:
 					break;
+				case ZEND_JMPZNZ:
+					printf(" to 0x%08x", &op->opcodes[execute_data->opline->extended_value]);
+					break;
 				default:
 					printf(" unknown extended value");
 					break;
@@ -185,10 +188,10 @@ int main(int argc, char *argv[])
 		}
 
 		/** Operands */
-		int t = 1;
-		while (t < 3) {
-			int operand_type = (t == 1) ? execute_data->opline->op1_type : execute_data->opline->op2_type;
-			znode_op operand = (t++ == 1) ? execute_data->opline->op1 : execute_data->opline->op2;
+		int t = 0;
+		while (t < 2) {
+			int operand_type = (t == 0) ? execute_data->opline->op1_type : execute_data->opline->op2_type;
+			znode_op operand = (t++ == 0) ? execute_data->opline->op1 : execute_data->opline->op2;
 
 			printf(" ");
 			switch (operand_type) {
@@ -202,6 +205,21 @@ int main(int argc, char *argv[])
 					zend_print_variable(*EX_TMP_VAR(execute_data, operand.var)->var.ptr_ptr);
 					break;
 				case IS_UNUSED:
+					switch(execute_data->opline->opcode) {
+						case ZEND_JMP:
+							if (t == 1) printf("to 0x%08x", operand.opline_num);
+							break;
+						case ZEND_JMPZ:
+						case ZEND_JMPZ_EX:
+						case ZEND_JMPNZ:
+						case ZEND_JMPNZ_EX:
+						case ZEND_JMP_SET:
+							if (t == 2) printf("to 0x%08x", operand.opline_num);
+							break;
+						default:
+							printf("-");
+							break;
+					}
 					break;
 				case IS_CV:
 					printf("$%s", op->vars[operand.var].name);
