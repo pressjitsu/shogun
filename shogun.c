@@ -2,10 +2,7 @@
  * Shogun PHP Malware Analysis Toolkit
  *
  * Copyright (C) 2015 Pressjitsu - All Rights Reserved
- * Proprietary and confidential
- * Unauthorized copying of this file, via any medium is strictly prohibited
- *
- * Written by Gennady Kovshenin <gennady@kovshenin.com>
+ * License: GPLv3 (http://www.gnu.org/licenses/gpl-3.0.txt)
  */
 
 #include <stdio.h>

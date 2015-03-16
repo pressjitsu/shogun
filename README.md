@@ -28,3 +28,4 @@ Segmentation faults. DoS in production, should not be trusted so sanitize your e
 # License
 
 GPLv3 http://www.gnu.org/copyleft/gpl.html
+Copyright (c) Pressjitsu
